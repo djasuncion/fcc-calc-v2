@@ -3,7 +3,7 @@ import { evaluate } from "mathjs";
 
 import { StyledButton } from "./Button.styled";
 
-const Button = ({ id, input, data, setData, dataArray, setArray }) => {
+const Button = ({ id, input, data, setData }) => {
   const changeInput =
     input === "/" ? (
       <span>&divide;</span>
@@ -14,12 +14,11 @@ const Button = ({ id, input, data, setData, dataArray, setArray }) => {
     );
 
   const handleInput = e => {
-    const VALUE = e.target.value;
-    dataArray.push(VALUE);
+    const opsTester = /[+|\-|*|/]+$/;
+    const endsWithOps = opsTester.test(data);
 
     const CLEAR_DATA = () => {
       setData("0");
-      setArray([]);
     };
 
     switch (input) {
@@ -34,6 +33,11 @@ const Button = ({ id, input, data, setData, dataArray, setArray }) => {
         }
         break;
       case "=":
+        const multiOps = /\d+[+|\-|/|*]{2,}\d+/;
+        const isMultiOps = multiOps.test(data);
+
+        console.log(isMultiOps);
+
         setData(evaluate(data));
         break;
       case ".":
@@ -44,6 +48,34 @@ const Button = ({ id, input, data, setData, dataArray, setArray }) => {
         if (notAllow) return;
 
         setData(data + input);
+        break;
+
+      case "+":
+        if (endsWithOps) {
+          const newData = data.replace(opsTester, input);
+          setData(newData);
+        } else {
+          setData(data + input);
+        }
+
+        break;
+      case "*":
+        if (endsWithOps) {
+          const newData = data.replace(opsTester, input);
+          setData(newData);
+        } else {
+          setData(data + input);
+        }
+
+        break;
+      case "/":
+        if (endsWithOps) {
+          const newData = data.replace(opsTester, input);
+          setData(newData);
+        } else {
+          setData(data + input);
+        }
+
         break;
 
       default:
